@@ -25,9 +25,9 @@ def run_all_components():
     print("1️⃣ Running experimental approaches...")
     os.system("python experimental_approaches.py > logs_experimental.txt 2>&1")
     
-    if os.path.exists('data/train_experimental.csv'):
-        exp_train = pd.read_csv('data/train_experimental.csv')
-        exp_test = pd.read_csv('data/test_experimental.csv')
+    if os.path.exists('data/processed/train_experimental.csv'):
+        exp_train = pd.read_csv('data/processed/train_experimental.csv')
+        exp_test = pd.read_csv('data/processed/test_experimental.csv')
         results['components']['experimental'] = {
             'status': 'SUCCESS',
             'train_shape': exp_train.shape,
@@ -81,8 +81,8 @@ def analyze_data_quality():
     
     try:
         # Original data
-        train_df = pd.read_csv('data/train.csv')
-        test_df = pd.read_csv('data/test.csv', comment='#')
+        train_df = pd.read_csv('data/raw/train.csv')
+        test_df = pd.read_csv('data/raw/test.csv', comment='#')
         
         print(f"📈 Original Data:")
         print(f"   Training: {train_df.shape[0]} samples, {train_df.shape[1]} features")
@@ -151,10 +151,10 @@ def generate_summary_report(results):
     
     print(f"\n📁 Generated Files:")
     files_to_check = [
-        'data/submission_final.csv',
-        'data/submission.csv', 
-        'data/train_experimental.csv',
-        'data/test_experimental.csv'
+        'outputs/submission_final.csv',
+        'outputs/submission.csv', 
+        'data/processed/train_experimental.csv',
+        'data/processed/test_experimental.csv'
     ]
     
     for filepath in files_to_check:

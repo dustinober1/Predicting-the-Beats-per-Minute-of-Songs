@@ -14,9 +14,9 @@ from pathlib import Path
 warnings.filterwarnings('ignore')
 
 # Configuration
-TRAIN_FILE = 'data/train.csv'
-TEST_FILE = 'data/test.csv'
-OUTPUTS_DIR = 'outputs'
+TRAIN_FILE = 'data/raw/train.csv'
+TEST_FILE = 'data/raw/test.csv'
+OUTPUTS_DIR = 'data/processed'
 EXPERIMENTAL_TRAIN = 'train_experimental.csv'
 EXPERIMENTAL_TEST = 'test_experimental.csv'
 TARGET_COLUMN = 'beats_per_minute'

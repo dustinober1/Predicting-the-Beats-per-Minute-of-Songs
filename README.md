@@ -20,9 +20,17 @@ This project develops predictive models for music BPM using audio features like 
 
 ```
 bpm-prediction-project/
-├── 📁 data/                         # Original datasets
-│   ├── train.csv                    # Training dataset (10 samples)
-│   └── test.csv                     # Test dataset (10 samples)
+├── 📁 data/                         # All datasets
+│   ├── raw/                         # Original, unprocessed data
+│   │   ├── train.csv                # Training dataset (10 samples)
+│   │   ├── test.csv                 # Test dataset (10 samples)
+│   │   ├── sample_submission.csv    # Sample submission format
+│   │   └── README.md                # Raw data documentation
+│   ├── processed/                   # Processed and engineered data
+│   │   ├── train_experimental.csv   # Enhanced training data (53 features)
+│   │   ├── test_experimental.csv    # Enhanced test data (49 features)
+│   │   └── README.md                # Processed data documentation
+│   └── README.md                    # Main data documentation
 ├── 📁 src/                          # Core source code modules
 │   ├── __init__.py                  # Python package marker
 │   ├── data_preprocessing.py        # Data loading and preprocessing
@@ -39,6 +47,11 @@ bpm-prediction-project/
 │   ├── EDA.ipynb                   # Exploratory Data Analysis
 │   ├── modeling.ipynb              # Interactive model development ✅
 │   └── README.md                   # Notebooks documentation
+├── 📁 tests/                        # Unit tests and testing framework
+│   ├── __init__.py                 # Test package marker
+│   └── README.md                   # Testing documentation
+├── 📁 models/                       # Trained model artifacts
+│   └── README.md                   # Model documentation
 ├── 📁 config/                       # Configuration files
 │   ├── config.py                   # Main configuration parameters
 │   ├── feature_config.py           # Feature-specific settings
@@ -46,8 +59,6 @@ bpm-prediction-project/
 ├── 📁 outputs/                      # Generated results
 │   ├── submission_final.csv        # Primary predictions (Ridge) ⭐
 │   ├── submission.csv              # Alternative predictions (Lasso)
-│   ├── train_experimental.csv      # Enhanced training data (53 features)
-│   ├── test_experimental.csv       # Enhanced test data (49 features)
 │   └── README.md                   # Outputs documentation
 ├── � docs/                         # Documentation
 │   ├── executive_summary.md        # Business-focused summary
@@ -178,8 +189,8 @@ feature_qtrans_normal, feature_qtrans_uniform
 ### Generated Files
 1. **`outputs/submission_final.csv`** - Primary predictions (Ridge model)
 2. **`outputs/submission.csv`** - Alternative predictions (Lasso model)
-3. **`outputs/train_experimental.csv`** - Enhanced training dataset
-4. **`outputs/test_experimental.csv`** - Enhanced test dataset
+3. **`data/processed/train_experimental.csv`** - Enhanced training dataset
+4. **`data/processed/test_experimental.csv`** - Enhanced test dataset
 
 ### Prediction Statistics
 ```

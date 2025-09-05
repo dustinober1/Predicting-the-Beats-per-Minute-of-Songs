@@ -25,23 +25,13 @@ def load_and_preprocess_data():
     print("🔄 Loading and preprocessing data...")
     
     # Load data
-    train_df = pd.read_csv('data/train.csv')
-    test_df = pd.read_csv('data/test.csv', comment='#')
+    from config.config import TRAIN_FILE, TEST_FILE
+    train_df = pd.read_csv(TRAIN_FILE)
+    test_df = pd.read_csv(TEST_FILE, comment='#')
     
     # Standardize column names
-    test_column_mapping = {
-        'AudioLoudness': 'audio_loudness',
-        'VocalContent': 'vocal_content', 
-        'AcousticQuality': 'acoustic_quality',
-        'InstrumentalScore': 'instrumental_score',
-        'LivePerformanceLikelihood': 'live_performance_likelihood',
-        'MoodScore': 'mood_score',
-        'Energy': 'energy',
-        'RhythmScore': 'rhythm_score',
-        'TrackDurationMs': 'track_duration_ms'
-    }
-    
-    test_df = test_df.rename(columns=test_column_mapping)
+    from config.feature_config import TEST_COLUMN_MAPPING
+    test_df = test_df.rename(columns=TEST_COLUMN_MAPPING)
     
     print(f"   ✅ Training data: {train_df.shape}")
     print(f"   ✅ Test data: {test_df.shape}")
@@ -142,10 +132,10 @@ def make_predictions(model, test_features, test_ids):
         'BeatsPerMinute': predictions
     })
     
-    # Save submission
-    submission.to_csv('data/submission_final.csv', index=False)
-    
-    print(f"   ✅ Predictions saved to data/submission_final.csv")
+    from config.config import OUTPUTS_DIR, SUBMISSION_FILE
+    output_path = f"{OUTPUTS_DIR}/{SUBMISSION_FILE}"
+    submission.to_csv(output_path, index=False)
+    print(f"   ✅ Predictions saved to {output_path}")
     print(f"   📊 Prediction statistics:")
     print(f"      Mean BPM: {predictions.mean():.2f}")
     print(f"      Std BPM: {predictions.std():.2f}")
@@ -189,9 +179,9 @@ def main():
     
     print("\n🎉 Pipeline completed successfully!")
     print(f"📁 Files created:")
-    print(f"   - data/submission_final.csv")
-    print(f"   - data/train_experimental.csv (from experimental_approaches.py)")
-    print(f"   - data/test_experimental.csv (from experimental_approaches.py)")
+    print(f"   - outputs/submission_final.csv")
+    print(f"   - data/processed/train_experimental.csv (from experimental_approaches.py)")
+    print(f"   - data/processed/test_experimental.csv (from experimental_approaches.py)")
     
     return submission
 
