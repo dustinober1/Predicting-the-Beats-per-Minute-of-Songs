@@ -127,6 +127,21 @@ python scripts/project_summary.py
 jupyter notebook notebooks/modeling.ipynb
 ```
 
+### 📘 Notebook & Reproducible Script
+
+A ready-to-run model comparison notebook and a reproducible training script were added:
+
+- `notebooks/model_comparison.ipynb` — compares RandomForest, XGBoost (if installed), and MLP with MAE/R2 metrics and plots. Run it interactively or in CI.
+- `scripts/predict_bpm.py` — trains a RandomForest on `data/processed/train_experimental.csv` and saves a model to `models/rf_model.pkl`. Useful for reproducible model artifacts.
+
+To run the notebook headlessly (CI or locally):
+```bash
+# install deps
+pip install -r requirements.txt
+# execute notebook and save executed copy
+jupyter nbconvert --to notebook --execute notebooks/model_comparison.ipynb --ExecutePreprocessor.timeout=600 --output executed_notebooks/model_comparison_executed.ipynb
+```
+
 ## 🔬 Technical Approach
 
 ### Data Features
