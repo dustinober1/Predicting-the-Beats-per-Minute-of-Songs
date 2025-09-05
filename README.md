@@ -20,27 +20,43 @@ This project develops predictive models for music BPM using audio features like 
 
 ```
 bpm-prediction-project/
-├── 📁 data/
-│   ├── train.csv                    # Original training dataset (10 samples)
-│   ├── test.csv                     # Original test dataset (10 samples)
-│   ├── submission.csv               # Notebook-generated predictions
-│   ├── submission_final.csv         # Main pipeline predictions ⭐
-│   ├── train_experimental.csv       # Enhanced training data (53 features)
-│   └── test_experimental.csv        # Enhanced test data (49 features)
-├── 📁 notebooks/
-│   ├── EDA.ipynb                    # Exploratory Data Analysis
-│   └── modeling.ipynb               # Interactive model development ✅
-├── 📁 src/
+├── 📁 data/                         # Original datasets
+│   ├── train.csv                    # Training dataset (10 samples)
+│   └── test.csv                     # Test dataset (10 samples)
+├── 📁 src/                          # Core source code modules
 │   ├── __init__.py                  # Python package marker
 │   ├── data_preprocessing.py        # Data loading and preprocessing
 │   ├── feature_engineering.py       # Standard feature engineering
 │   ├── models.py                    # ML model definitions
 │   └── utils.py                     # Utility functions
-├── 🔬 experimental_approaches.py    # Advanced feature engineering ✅
-├── 🚀 run_pipeline.py              # Main automated pipeline ✅
-├── 📊 run_complete_evaluation.py   # Comprehensive evaluation ✅
-├── 📄 project_summary.py           # Final project summary ✅
-├── 📋 executive_summary.md         # Business-focused summary
+├── 📁 scripts/                      # Executable scripts
+│   ├── experimental_approaches.py   # Advanced feature engineering ✅
+│   ├── run_pipeline.py             # Main automated pipeline ✅
+│   ├── run_complete_evaluation.py  # Comprehensive evaluation ✅
+│   ├── project_summary.py          # Final project summary ✅
+│   └── README.md                   # Scripts documentation
+├── 📁 notebooks/                    # Interactive analysis
+│   ├── EDA.ipynb                   # Exploratory Data Analysis
+│   ├── modeling.ipynb              # Interactive model development ✅
+│   └── README.md                   # Notebooks documentation
+├── 📁 config/                       # Configuration files
+│   ├── config.py                   # Main configuration parameters
+│   ├── feature_config.py           # Feature-specific settings
+│   └── README.md                   # Configuration documentation
+├── 📁 outputs/                      # Generated results
+│   ├── submission_final.csv        # Primary predictions (Ridge) ⭐
+│   ├── submission.csv              # Alternative predictions (Lasso)
+│   ├── train_experimental.csv      # Enhanced training data (53 features)
+│   ├── test_experimental.csv       # Enhanced test data (49 features)
+│   └── README.md                   # Outputs documentation
+├── � docs/                         # Documentation
+│   ├── executive_summary.md        # Business-focused summary
+│   └── README.md                   # Documentation guide
+├── � logs/                         # Execution logs
+│   ├── logs_experimental.txt       # Feature engineering logs
+│   ├── logs_pipeline.txt           # Pipeline execution logs
+│   └── README.md                   # Logs documentation
+├── 🚀 main.py                      # Main entry point script ⭐
 ├── 🔧 requirements.txt             # Python dependencies
 ├── ⚙️ setup.py                     # Package configuration
 ├── 🚫 .gitignore                   # Git ignore rules
@@ -74,22 +90,25 @@ bpm-prediction-project/
 
 ### 🎯 Running the Complete Pipeline
 
-**Option 1: Run Everything (Recommended)**
+**Option 1: Main Entry Point (Recommended)**
 ```bash
-python run_complete_evaluation.py
+# Run everything with main script
+python main.py --run-all
+
+# Or run individual components
+python main.py --experimental     # Advanced feature engineering
+python main.py --pipeline         # Main modeling pipeline
+python main.py --evaluate         # Comprehensive evaluation
+python main.py --summary          # Project summary
 ```
-This executes all components and generates a comprehensive analysis.
 
-**Option 2: Individual Components**
+**Option 2: Direct Script Execution**
 ```bash
-# Advanced feature engineering
-python experimental_approaches.py
-
-# Main modeling pipeline
-python run_pipeline.py
-
-# Project summary
-python project_summary.py
+# Run scripts directly
+python scripts/experimental_approaches.py
+python scripts/run_pipeline.py
+python scripts/run_complete_evaluation.py
+python scripts/project_summary.py
 ```
 
 **Option 3: Interactive Analysis**
@@ -157,10 +176,10 @@ feature_qtrans_normal, feature_qtrans_uniform
 ## 📊 Results & Outputs
 
 ### Generated Files
-1. **`submission_final.csv`** - Primary predictions (Ridge model)
-2. **`submission.csv`** - Alternative predictions (Lasso model)
-3. **`train_experimental.csv`** - Enhanced training dataset
-4. **`test_experimental.csv`** - Enhanced test dataset
+1. **`outputs/submission_final.csv`** - Primary predictions (Ridge model)
+2. **`outputs/submission.csv`** - Alternative predictions (Lasso model)
+3. **`outputs/train_experimental.csv`** - Enhanced training dataset
+4. **`outputs/test_experimental.csv`** - Enhanced test dataset
 
 ### Prediction Statistics
 ```
@@ -194,7 +213,7 @@ predictions = model.predict(X_test)
 
 ### Advanced Feature Engineering
 ```python
-from experimental_approaches import run_experimental_pipeline
+from scripts.experimental_approaches import run_experimental_pipeline
 
 # Generate enhanced features
 train_exp, test_exp = run_experimental_pipeline()
@@ -204,10 +223,21 @@ print(f"Features created: {train_exp.shape[1] - 14}")
 ### Custom Pipeline
 ```python
 # Run complete pipeline with custom parameters
-from run_pipeline import main
+from scripts.run_pipeline import main
 
 submission = main()
 print(f"Predictions saved: {submission.shape[0]} samples")
+```
+
+### Configuration Usage
+```python
+# Use configuration files
+from config.config import TRAIN_FILE, RIDGE_ALPHA
+from config.feature_config import TEST_COLUMN_MAPPING
+
+# Load data with standardized paths
+train_df = pd.read_csv(TRAIN_FILE)
+test_df = test_df.rename(columns=TEST_COLUMN_MAPPING)
 ```
 
 ## 🔧 Development & Extension

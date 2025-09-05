@@ -8,7 +8,38 @@ from sklearn.neighbors import NearestNeighbors, LocalOutlierFactor
 from sklearn.feature_selection import mutual_info_regression
 import warnings
 import os
+import sys
+from pathlib import Path
+
 warnings.filterwarnings('ignore')
+
+# Configuration
+TRAIN_FILE = 'data/train.csv'
+TEST_FILE = 'data/test.csv'
+OUTPUTS_DIR = 'outputs'
+EXPERIMENTAL_TRAIN = 'train_experimental.csv'
+EXPERIMENTAL_TEST = 'test_experimental.csv'
+TARGET_COLUMN = 'beats_per_minute'
+
+# Column mappings
+TEST_COLUMN_MAPPING = {
+    'AudioLoudness': 'audio_loudness',
+    'VocalContent': 'vocal_content', 
+    'AcousticQuality': 'acoustic_quality',
+    'InstrumentalScore': 'instrumental_score',
+    'LivePerformanceLikelihood': 'live_performance_likelihood',
+    'MoodScore': 'mood_score',
+    'Energy': 'energy',
+    'RhythmScore': 'rhythm_score',
+    'TrackDurationMs': 'track_duration_ms'
+}
+
+ALL_NUMERIC_FEATURES = [
+    'rhythm_score', 'audio_loudness', 'vocal_content', 'acoustic_quality',
+    'instrumental_score', 'live_performance_likelihood', 'mood_score', 'energy'
+]
+
+CONTENT_FEATURES = ['vocal_content', 'acoustic_quality', 'instrumental_score']
 
 def try_outlier_based_features(train_df, test_df):
     """Use outlier detection to create features"""
@@ -16,8 +47,7 @@ def try_outlier_based_features(train_df, test_df):
     
     train_out = train_df.copy()
     test_out = test_df.copy()
-    feature_cols = ['rhythm_score', 'audio_loudness', 'vocal_content', 'acoustic_quality',
-                   'instrumental_score', 'live_performance_likelihood', 'mood_score', 'energy']
+    feature_cols = ALL_NUMERIC_FEATURES
     
     # Isolation Forest for outlier detection
     iso_forest = IsolationForest(contamination=0.1, random_state=42)
@@ -57,8 +87,7 @@ def try_dimensionality_reduction_features(train_df, test_df):
     
     train_dim = train_df.copy()
     test_dim = test_df.copy()
-    feature_cols = ['rhythm_score', 'audio_loudness', 'vocal_content', 'acoustic_quality',
-                   'instrumental_score', 'live_performance_likelihood', 'mood_score', 'energy']
+    feature_cols = ALL_NUMERIC_FEATURES
     
     # Standardize for PCA/ICA
     scaler = StandardScaler()
@@ -97,8 +126,7 @@ def try_density_based_clustering(train_df, test_df):
     
     train_cluster = train_df.copy()
     test_cluster = test_df.copy()
-    feature_cols = ['rhythm_score', 'audio_loudness', 'vocal_content', 'acoustic_quality',
-                   'instrumental_score', 'live_performance_likelihood', 'mood_score', 'energy']
+    feature_cols = ALL_NUMERIC_FEATURES
     
     # Standardize for clustering
     scaler = StandardScaler()
@@ -145,8 +173,7 @@ def try_quantile_transformation(train_df, test_df):
     test_quant = test_df.copy()
     
     # Apply quantile transformation to skewed features
-    skewed_features = ['vocal_content', 'acoustic_quality', 'instrumental_score', 
-                      'energy', 'rhythm_score', 'mood_score']
+    skewed_features = CONTENT_FEATURES + ['energy', 'rhythm_score', 'mood_score']
     
     qt_normal = QuantileTransformer(output_distribution='normal', random_state=42)
     qt_uniform = QuantileTransformer(output_distribution='uniform', random_state=42)
@@ -204,7 +231,7 @@ def try_feature_interactions_advanced(train_df, test_df):
     print(f"   ✅ Created advanced interaction features")
     return train_inter, test_inter
 
-def analyze_target_distribution(df, target_col='beats_per_minute'):
+def analyze_target_distribution(df, target_col=TARGET_COLUMN):
     """Analyze the distribution of BPM values"""
     print("📈 Analyzing BPM distribution...")
     
@@ -244,13 +271,11 @@ def run_experimental_pipeline():
     print("=" * 50)
     
     # Find data files
-    data_dir = 'data'
-    train_file = 'data/train.csv'
-    test_file = 'data/test.csv'
+    train_file = TRAIN_FILE
+    test_file = TEST_FILE
     
     if not os.path.exists(train_file):
-        print("❌ Could not find train.csv file!")
-        print(f"🔍 Searched in: {train_file}")
+        print(f"❌ Could not find train.csv file at {train_file}!")
         return None, None
     
     # Load data
@@ -258,22 +283,8 @@ def run_experimental_pipeline():
     train_df = pd.read_csv(train_file)
     test_df = pd.read_csv(test_file, comment='#')
     
-    # Standardize column names to match the expected format
-    # Map test columns to train column format
-    test_column_mapping = {
-        'AudioLoudness': 'audio_loudness',
-        'VocalContent': 'vocal_content', 
-        'AcousticQuality': 'acoustic_quality',
-        'InstrumentalScore': 'instrumental_score',
-        'LivePerformanceLikelihood': 'live_performance_likelihood',
-        'MoodScore': 'mood_score',
-        'Energy': 'energy',
-        'RhythmScore': 'rhythm_score',
-        'TrackDurationMs': 'track_duration_ms'
-    }
-    
     # Rename test columns to match train format
-    test_df = test_df.rename(columns=test_column_mapping)
+    test_df = test_df.rename(columns=TEST_COLUMN_MAPPING)
     
     print(f"📊 Original training shape: {train_df.shape}")
     print(f"📊 Original test shape: {test_df.shape}")
@@ -304,9 +315,8 @@ def run_experimental_pipeline():
     print(f"🎯 Created {train_exp.shape[1] - train_df.shape[1]} new features")
     
     # Save experimental datasets
-    output_dir = os.path.dirname(train_file)
-    train_exp_file = f'{output_dir}/train_experimental.csv'
-    test_exp_file = f'{output_dir}/test_experimental.csv'
+    train_exp_file = f'{OUTPUTS_DIR}/{EXPERIMENTAL_TRAIN}'
+    test_exp_file = f'{OUTPUTS_DIR}/{EXPERIMENTAL_TEST}'
     
     train_exp.to_csv(train_exp_file, index=False)
     test_exp.to_csv(test_exp_file, index=False)
